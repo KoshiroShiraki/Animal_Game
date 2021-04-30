@@ -3,7 +3,11 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Animal_carn
+  - Animal_herb
+  - Meat
+  - Grass
   layers:
   - Default
   - TransparentFX

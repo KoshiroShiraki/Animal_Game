@@ -65,10 +65,11 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\C#\AnimalController.cs" />
     <Compile Include="Assets\Scripts\C#\CameraController.cs" />
+    <Compile Include="Assets\Scripts\C#\CarnController.cs" />
+    <Compile Include="Assets\Scripts\C#\EatFood.cs" />
     <Compile Include="Assets\Scripts\C#\FoodController.cs" />
-    <Compile Include="Assets\Scripts\C#\Grass_PlayerController.cs" />
     <Compile Include="Assets\Scripts\C#\GrassController.cs" />
-    <Compile Include="Assets\Scripts\C#\Meat_PlayerController.cs" />
+    <Compile Include="Assets\Scripts\C#\HerbController.cs" />
     <Compile Include="Assets\Scripts\C#\MeatController.cs" />
     <Compile Include="Assets\Scripts\C#\PlayerController.cs" />
     <Compile Include="Assets\Scripts\C#\SunController.cs" />

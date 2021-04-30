@@ -9,6 +9,8 @@ public class CameraController : MonoBehaviour
     public float cameraHeight = 10.0f;
     public float cameraChase = -2.0f;
 
+    public float dist = 0.0f; //カメラずれ距離
+
     // Start is called before the first frame update
     void Start()
     {
@@ -27,7 +29,8 @@ public class CameraController : MonoBehaviour
         this.transform.LookAt(Player.transform.position);
 
         //マウス位置によって少し画面をずらす
-        Vector3 slide = (Input.mousePosition - new Vector3(Screen.width / 2, Screen.height)) / 250.0f;
+        //中心を原点に、画面端で1になるように正規化
+        Vector3 slide = new Vector3(Input.mousePosition.x * 2 / Screen.width - 1, Input.mousePosition.y * 2 / Screen.height - 1, 0.0f);
         Vector3 cameraPos = this.transform.position;
         cameraPos.x += slide.x;
         cameraPos.z += slide.y; //軸の違いを吸収

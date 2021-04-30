@@ -28,9 +28,13 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //InstanciateするFoodはプレイヤーの所有物なのでisWildをFalseに
-        Meat.GetComponent<MeatController>().isWild = false;
-        Grass.GetComponent<GrassController>().isWild = false;
+        //InstanciateするFoodはプレイヤーの所有物なのでStateをPLAYERに
+        Meat.GetComponent<MeatController>().State = foodState.PLAYER;
+        Grass.GetComponent<GrassController>().State = foodState.PLAYER;
+        
+        //生成直後はBoxColliderオフに
+        Meat.GetComponent<BoxCollider>().enabled = false;
+        Grass.GetComponent<BoxCollider>().enabled = false;
 
         //パラメータリセット
         resetParam();
@@ -63,6 +67,8 @@ public class PlayerController : MonoBehaviour
     //パラメータ更新
     private void updateParam()
     {
+        //MoveVectorのリセット
+        moveVector = new Vector3(0.0f, 0.0f, 0.0f);
         //入力受付
         if (Input.GetKey(KeyCode.W))
         {
@@ -81,6 +87,8 @@ public class PlayerController : MonoBehaviour
             moveVector.x += 1;
         }
 
+        moveVector = moveVector.normalized * speed;
+
         Vector3 mouseVector = (Input.mousePosition - new Vector3(Screen.width / 2, Screen.height / 2, 0.0f)); //マウスベクトル(原点は画面中心)
 
         Vector3 baseDir = new Vector3(0.0f, 1.0f, 0.0f); //基準方向
@@ -93,14 +101,7 @@ public class PlayerController : MonoBehaviour
     //移動関数
     void playerMove()
     {
-        //大きさを1に正規化して速度と積をとる
-        moveVector = moveVector.normalized * speed;
-
-        //1秒間に進む距離 = moveVectorの大きさ
         this.transform.position += moveVector * Time.deltaTime;
-
-        //moveVectorのリセット
-        moveVector = new Vector3(0.0f, 0.0f, 0.0f);
     }
 
     //回転関数
@@ -116,6 +117,7 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0))
             {
+                Meat.GetComponent<MeatController>().moveDir = this.dirVector * Meat.GetComponent<MeatController>().dist;
                 GameObject obj = Instantiate(Meat, this.transform.position, Quaternion.identity);
                 meatCount--;
             }
@@ -124,35 +126,39 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(1))
             {
+                Grass.GetComponent<GrassController>().moveDir = this.dirVector * Grass.GetComponent<GrassController>().dist;
                 GameObject obj = Instantiate(Grass, this.transform.position, Quaternion.identity);
                 grassCount--;
             }
         }
     }
 
-    //throwアニメーション
-    void throwAnim(GameObject obj)
-    {
-
-    }
-
     //衝突処理
     private void OnTriggerEnter(Collider other)
     {
         //衝突相手がMeatだった場合
-        if (other.name == "Meat" || other.name == "Meat_Player(Clone)") {
-            other.gameObject.GetComponent<BoxCollider>().enabled = false;
+        if (other.gameObject.tag == "Meat") 
+        {
             meatCount++;
+
+            //衝突があった瞬間にBoxCollider切らないと判定が重複する
+            other.gameObject.GetComponent<BoxCollider>().enabled = false;
+
+            other.gameObject.GetComponent<MeatController>().isGetting = true;
         }
         //衝突相手がGrassだった場合
-        if (other.name == "Grass" || other.name == "Grass_Player(Clone)")
+        if (other.gameObject.tag == "Grass")
         {
-            other.gameObject.GetComponent<BoxCollider>().enabled = false;
             grassCount++;
+
+            //衝突があった瞬間にBoxCollider切らないと判定が重複する
+            other.gameObject.GetComponent<BoxCollider>().enabled = false;
+
+            other.gameObject.GetComponent<GrassController>().isGetting = true;
         }
     }
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log(collision.gameObject.name);
+
     }
 }
